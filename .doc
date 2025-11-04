@@ -1,0 +1,124 @@
+Aedion Server Documentation
+
+1. Overview
+
+The Aedion server is a backend system designed to power a health and wellness application. It provides functionalities for user management, health scanning (skin and eye), AI-powered chat and insights, appointment scheduling, subscriptions, and more. The system is built to be scalable, secure, and robust, leveraging modern technologies and cloud services.
+
+2. Core Features
+
+The application offers a wide range of features to its users:
+
+-   **User Management**:
+    -   Secure user registration and authentication (email/password).
+    -   User profile management including personal details, profile picture, and verification status.
+    -   Support for soft and permanent user deletion.
+
+-   **Health Scanning**:
+    -   **Skin & Eye Scans**: Users can submit images for analysis of different body parts.
+    -   **AI-Powered Analysis**: Scans are processed to provide results, confidence scores, severity levels, and recommendations.
+
+-   **AI-Driven Chat & Queries**:
+    -   **Conversational AI**: Users can interact with an AI assistant through chat sessions.
+    -   **Symptom Analysis**: Users can describe symptoms within a session, which can be linked to scans for a more comprehensive analysis.
+    -   **Query Logging**: Persists user questions and AI answers for future reference.
+
+-   **Subscription & Billing**:
+    -   **Tiered Subscriptions**: Freemium, Premium, and Premium Plus tiers.
+    -   **Multi-platform Support**: Manages subscriptions from both Apple App Store and Google Play Store.
+    -   **Flexible Billing Cycles**: Supports both monthly and yearly billing.
+    -   **Status Tracking**: Detailed tracking of subscription status (Active, Canceled, Trial, etc.).
+
+-   **Appointments**:
+    -   Users can schedule physical or virtual appointments.
+    -   Includes details like title, time, and location/meeting URL.
+    -   Functionality for sending reminders.
+
+-   **Notifications**:
+    -   In-app notifications for reminders, AI-generated insights, and account activity.
+    -   Users can manage their notification preferences.
+
+-   **User Engagement**:
+    -   **Streaks**: Tracks user's consistent engagement with the app to encourage regular use.
+
+-   **Personalized Health Profile**:
+    -   **Medical Profile**: Stores user's height, weight, blood group, and allergies.
+    -   **User Settings**: Customizable preferences for notifications and other app features.
+
+-   **Feedback System**:
+    -   Users can submit feedback categorized as suggestions, complaints, or medical queries.
+
+-   **Audio Transcription**:
+    -   Supports transcribing audio files, potentially for voice-based interactions or notes.
+
+3. Technical Stack & Dependencies
+
+The server is built on a modern JavaScript/TypeScript stack and relies on several key technologies and services.
+
+3.1. Key Dependencies
+
+-   **Prisma**: The primary Object-Relational Mapper (ORM) for database interactions. It provides type-safe access to the MySQL database.
+-   **Google Cloud Platform (GCP)**: The application heavily utilizes GCP services for its backend infrastructure.
+    -   **Google Cloud Functions**: For running serverless, event-driven code, likely for processing scans or other background tasks.
+    -   **Google IAM (Identity and Access Management)**: For managing permissions and access control across Google Cloud resources.
+    -   **Google IAP (Identity-Aware Proxy)**: Used to secure web applications and VMs running on GCP.
+    -   **Google STS (Security Token Service)**: For managing authentication and exchanging credentials for secure access to GCP resources.
+    -   **Google Policy Troubleshooter**: For diagnosing and understanding IAM policies.
+-   **EJS (Embedded JavaScript templates)**: A templating engine, likely used for generating dynamic HTML content, such as for emails or web views.
+-   **Scarf**: An analytics service for npm packages, used to gather insights on package usage and adoption.
+
+3.2. Database
+
+*   **Database System**: MySQL
+*   **Schema Management**: The database schema is managed by Prisma (`prisma/schema.prisma`).
+
+4. Database Schema Overview
+
+The `schema.prisma` file defines the data models for the application. Here are the key models:
+
+-   `User`: The central model for user data.
+-   `Subscription`: Manages user subscriptions, linking to a `User` and containing platform-specific (Apple/Google) details.
+-   `Scan`: Stores information about each skin or eye scan, including the file path, body part, and AI-generated results. It is linked to a `User` and a `Session`.
+-   `Session`: Groups related `Symptom` and `Scan` records for a single user interaction.
+-   `ChatSession` & `Chat`: Manages the conversational history between a user and the AI.
+-   `Appointment`: Stores details for user-scheduled appointments.
+-   `Notification`: Holds notifications to be displayed to the user.
+-   `Medical_Profile`: Contains user-provided medical information.
+-   `Feedback`: Stores user-submitted feedback.
+-   `AudioTranscription`: Contains results from audio transcription jobs.
+
+For a detailed view of all fields, relationships, and enums, please refer to the `prisma/schema.prisma` file.
+
+5. High-Level Functions & Services
+
+Based on the dependencies and schema, the server likely implements the following services:
+
+-   **`AuthService`**: Handles user registration, login, token generation, and profile updates.
+-   **`SubscriptionService`**: Manages the lifecycle of subscriptions, including creation, renewal, cancellation, and status updates by interacting with Apple and Google payment systems.
+-   **`ScanService`**:
+    -   Accepts image uploads for scans.
+    -   Orchestrates the AI analysis process, possibly by invoking a Google Cloud Function.
+    -   Stores and retrieves scan results.
+-   **`ChatService`**:
+    -   Manages chat sessions.
+    -   Integrates with a Large Language Model (LLM) to provide AI responses.
+    -   Links chat context with user scans and symptoms.
+-   **`AppointmentService`**: Manages CRUD (Create, Read, Update, Delete) operations for appointments and sends out reminders.
+-   **`NotificationService`**: Creates and delivers notifications to users based on various application events.
+-   **`GCPServices`**: A collection of modules for interacting with Google Cloud APIs, handling authentication, permissions, and invoking cloud functions.
+
+6. Key Automated & Background Processes
+
+The server includes several automated services that run in the background to handle recurring tasks.
+
+-   **Appointment Reminders (`AppointmentReminderService`)**:
+    -   **Function**: This service automatically checks for upcoming appointments every 5 minutes.
+    -   **Logic**: It identifies appointments that are either 24 hours or 30 minutes away and sends an email reminder to the user, provided the user has enabled appointment notifications.
+    -   **Prevention**: It marks an appointment as "reminder sent" to avoid sending duplicate notifications.
+
+-   **User Account Cleanup (`AuthCleanup`)**:
+    -   **Function**: This service runs a scheduled task (e.g., monthly) to permanently delete user accounts.
+    -   **Logic**: It finds users who were "soft-deleted" more than a certain period ago (e.g., 30 days) and removes their data from the database permanently. This helps with data privacy and lifecycle management.
+
+-   **Appointment Event Notifications (`AppointmentNotificationSubscriber`)**:
+    -   **Function**: This service listens for events related to appointments (created, updated, removed).
+    -   **Logic**: When an appointment is created, updated, or canceled, this subscriber immediately triggers the `EmailNotificationService` to send a confirmation, update, or cancellation email to the user. This ensures timely communication about appointment changes.

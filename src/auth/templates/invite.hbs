@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email Template</title>
+    <style>
+        /* Very small responsive tweak: centers full-width mobiles */
+        @media only screen and (max-width: 620px) {
+            .container {
+                width: 100% !important;
+                padding-left: 12px !important;
+                padding-right: 12px !important;
+            }
+
+            .stack-column {
+                display: block !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+        }
+    </style>
+</head>
+
+<body
+    style="margin:0;padding:0;background-color:#F2F2F5;font-family:Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
+    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" height="100%" style="height:100vh;">
+        <tr>
+            <td align="center" valign="middle">
+
+                <table role="presentation" cellpadding="0" cellspacing="0" width="600" class="container"
+                    style="width:819px;background-color:#ffffff;border-radius:8px;overflow:hidden;margin: 86px 0 86px 0;">
+                    <tr>
+                        <td style="text-align:center; background-color:#ffffff; padding: 20px;">
+                            <img src="{{logoUrl}}" width="100%" alt="Aedion AI Logo"
+                                style="display:block; border:0; outline:none; text-decoration:none; margin: 0 auto;">
+                        </td>
+                    </tr>
+                    <tr style="padding:28px;">
+                        <td style="padding:28px;background-color:#ffffff;margin-top: 60px;">
+                            <h1 style="margin:60px 0 0 0;font-size:20px;line-height:28px;color:#111827;font-weight:500;">
+                                Hi there,</h1>
+                            <p style="margin:20px 0 0 0;font-weight:500; font-size:20px;color:#00000099;">
+                                {{inviterName}} has invited you to join AedionAi!
+                            </p>
+                            <p style="margin:20px 0 0 0;font-weight:500; font-size:20px;color:#00000099;">
+                                Discover Aedion today. Click below to download the app and get started.
+                            </p>
+                            <table style="width: 100%; margin-top: 40px;">
+                                <tr>
+                                    <td align="center" style="padding:10px;">
+                                        <a href="{{appStoreLink}}" target="_blank"
+                                            style="display:inline-block; background:#0070f3; color:#fff; padding:12px 24px; text-decoration:none; border-radius:6px; font-size:16px;">
+                                            Download for iPhone / iPad
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center" style="padding:10px;">
+                                        <a href="{{playStoreLink}}" target="_blank"
+                                            style="display:inline-block; background:#34a853; color:#fff; padding:12px 24px; text-decoration:none; border-radius:6px; font-size:16px;">
+                                            Download for Android
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p style="margin-top:20px; font-size:14px; color:#888; text-align: center;">
+                                If the buttons don't work, copy and paste these links:<br>
+                                <span style="word-break: break-all;">iOS: {{appStoreLink}}</span><br>
+                                <span style="word-break: break-all;">Android: {{playStoreLink}}</span>
+                            </p>
+                            <p style="margin:20px 0 0 0;font-weight:500; font-size:20px;color:#00000099;">Thanks!</p>
+                            <p style="margin:0 0 0 0;font-weight:500; font-size:20px;color:#00000099;">Aedion</p>
+                        </td>
+                    {{!-- <tr>
+                        <td
+                            style="padding:20px 28px;background-color:#ffffff;border-top:1px solid #D9D9D9;text-align:left;font-size:13px;color:#6b7280;">
+                            <p style="margin:0 0 8px 0;color:#00000080;font-size: 18px;font-weight:400;">P.S. Don't
+                                hesitate to get in touch if you have any questions _ we always respond to emails</p>
+                        </td>
+                    </tr> --}}
+                </table>
+            </td>
+        </tr>
+
+
+        <tr>
+            <td
+                style="padding:20px 0 0 0;background-color:#ffffff;border-top:1px solid #D9D9D9;text-align:left;font-size:13px;color:#6b7280;">
+                <p style="margin:0 0 8px 0;color:#00000080;font-size: 18px;font-weight:400;text-align: center;">© 2025
+                    Aedion</p>
+                <p style="margin:0 0 8px 0;color:#00000080;font-size: 18px;font-weight:400;text-align: center;"> Privacy
+                    Policy, Terms of Service </p>
+                <p
+                    style="margin:0 0 8px 0;color:#00000080;font-size: 18px;font-weight:400;text-align: center; margin-bottom: 27px;">
+                    Boston Massachusetts, United States</p>
+
+            </td>
+        </tr>
+    </table>
+
+    </td>
+    </tr>
+    </table>
+
+
+</body>
+
+</html>

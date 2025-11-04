@@ -1,0 +1,253 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum NotificationType {
+  REMINDER
+  INSIGHT
+  ACCOUNT_ACTIVITY
+}
+
+enum Status {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+  HIGHLIGHTED
+}
+
+enum RequestStatus {
+  OPEN
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum FlightType {
+  ONE_WAY
+  ROUND_TRIP
+  MULTI_CITY
+}
+
+enum RideType {
+  AIRPORT_PICKUP
+  CAR_HIRE
+}
+
+enum RequestType {
+  FLIGHT_BOOKING
+  HOTEL_RESERVATION
+  VISA_ASSISTANCE
+  PRIVATE_JET_CHARTER
+  EXECUTIVE_SHUTTLE
+  TRAVEL_INSURANCE
+  SEHEMBZ_PAY
+  TOUR_PACKAGE
+}
+
+model User {
+  id                String              @id @default(uuid())
+  email             String              @unique
+  passwordHash      String
+  firstName         String
+  lastName          String?
+  isVerified        Boolean             @default(false)
+  registrationToken RegistrationToken[]
+  notifications     Notification[]
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+}
+
+model Blog {
+  id            String    @id @default(uuid())
+  title         String
+  tag           BlogTag?   @relation(fields: [tagId], references: [id])
+  tagId         String?
+  content       String    @db.Text
+  coverMedia    String?   @db.Text
+  datePublished DateTime?
+  status        Status    @default(DRAFT)
+  highlighted   Boolean   @default(false)
+  archived      Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model BlogTag {
+  id        String    @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  blog      Blog[]
+}
+
+model TourType {
+  id        String        @id @default(uuid())
+  name      String
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  tours     TourPackage[]
+}
+
+model TourPackage {
+  id                 String                      @id @default(uuid())
+  tourTitle          String?
+  location           String?
+  minimumPrice       Float?
+  tourTypeId         String?
+  tourType           TourType?                    @relation(fields: [tourTypeId], references: [id])
+  status             Status?                      @default(DRAFT)
+  coverMedia         Json?
+  departureDate      DateTime?
+  returnDate         DateTime?
+  duration           Int?
+  datePublished      DateTime?
+  description        String?                      @db.Text
+  activities         String?
+  clientPriceOptions ClientCategoryPriceOption[] @relation("TourPriceOptions")
+  highlighted        Boolean?                     @default(false)
+  archived           Boolean?                     @default(false)
+  createdAt          DateTime?                    @default(now())
+  updatedAt          DateTime?                    @updatedAt
+}
+
+model DestinationTravel {
+  id                 String                      @id @default(uuid())
+  tourTitle          String?
+  location           String?
+  minimumPrice       Float?
+  status             Status?                     @default(DRAFT)
+  coverMedia         Json?
+  departureDate      DateTime?
+  returnDate         DateTime?
+  duration           Int?
+  datePublished      DateTime?
+  description        String?
+  activities         String?
+  clientPriceOptions ClientCategoryPriceOption[] @relation("DestinationPriceOptions")
+  highlighted        Boolean?                    @default(false)
+  archived           Boolean?                    @default(false)
+  createdAt          DateTime?                   @default(now())
+  updatedAt          DateTime?                   @updatedAt
+}
+
+model VisaChecklist {
+  id               String                    @id @default(uuid())
+  country          String?
+  location         String?
+  visaPriceOptions VisaDurationPriceOption[]@relation("visaPriceOptions")
+  description      String?
+  status           Status?                    @default(DRAFT)
+  images           Json?
+  datePublished    DateTime?
+  highlighted      Boolean?                   @default(false)
+  archived         Boolean?                   @default(false)
+  createdAt        DateTime?                  @default(now())
+  updatedAt        DateTime?                  @updatedAt
+}
+
+model EmailSubscriber {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ClientCategoryPriceOption {
+  id                  String             @id @default(uuid())
+  categoryName        String?
+  price               Float?
+  tourPackageId       String?
+  destinationTravelId String?
+  tourPackage         TourPackage?       @relation("TourPriceOptions", fields: [tourPackageId], references: [id])
+  destinationTravel   DestinationTravel? @relation("DestinationPriceOptions", fields: [destinationTravelId], references: [id])
+  createdAt           DateTime?          @default(now())
+  updatedAt           DateTime?          @updatedAt
+}
+
+model VisaDurationPriceOption {
+  id              String   @id @default(uuid())
+  durationInDays  Int?
+  price           Float?
+  createdAt       DateTime? @default(now())
+  updatedAt       DateTime? @updatedAt
+  visaChecklistId String?
+  visaChecklist   VisaChecklist? @relation("visaPriceOptions", fields: [visaChecklistId], references: [id], onDelete: Cascade)
+}
+
+model Request {
+  id          String         @id @default(uuid())
+  fullName    String?
+  email       String?
+  phoneNo     String?
+  requestDate DateTime?      @default(now())
+  status      RequestStatus? @default(OPEN)
+  requestType RequestType?
+
+  from String?
+  to   String?
+
+  departureDate    DateTime?
+  returnDate       DateTime?
+  numberOfPersons  Int?
+  preferredAirline String?
+  ticketClass      String?
+  flightType       FlightType?
+
+  purposeOfTravel    String?
+  destinationCountry String?
+  tavelTime          DateTime?
+
+  arrivalAirport String?
+  arrivalDate    DateTime?
+  arrivalTime    String?
+  rideType       RideType?
+
+  typeOfJet String?
+
+  comment                String?
+  additionalRequest      String?
+  travelDate             DateTime?
+  budget                 String?
+  accomodationPreference String?
+  tourPackageType        String?
+  durationOfInsurance    Int?
+  insuranceType          String?
+
+  reasonForContacting String? @db.Text
+  amount              String?
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+model RegistrationToken {
+  id          String   @id @default(uuid())
+  email       String
+  token       String?  @unique @db.VarChar(512)
+  expiresAt   DateTime?
+  used        Boolean? @default(false)
+  createdAt   DateTime? @default(now())
+  firstName   String?
+  dateOfBirth DateTime?
+  gender      String?
+  userId      String?
+  user        User?   @relation(fields: [userId], references: [id])
+  @@index([token, used, expiresAt])
+}
+
+model Notification {
+  id        String            @id @default(uuid())
+  userId    String?
+  user      User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType?
+  message   String?           @db.Text
+  isRead    Boolean?          @default(false)
+  createdAt DateTime?         @default(now())
+  @@index([userId])
+  @@index([createdAt])
+}

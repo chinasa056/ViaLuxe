@@ -1,0 +1,314 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Appointment {
+  createdAt: DateTime!
+  id: ID
+  location: String
+  meetingUrl: String
+  mode: AppointmentMode!
+  startTime: DateTime!
+  title: String!
+  user: UserType
+}
+
+enum AppointmentMode {
+  PHYSICAL
+  VIRTUAL
+}
+
+type AuthPayload {
+  accessToken: String!
+  user: UserType!
+}
+
+type Chat {
+  aiResponse: String!
+  createdAt: DateTime!
+  id: ID!
+  metadata: JSONObject
+  userId: String!
+  userInput: String!
+}
+
+input CompleteProfileInput {
+  dateOfBirth: String
+  firstName: String!
+  gender: GenderType
+  registrationToken: String!
+}
+
+type CompleteProfileResponse {
+  message: String!
+  registrationToken: String
+}
+
+input CreateAppointmentInput {
+  id: ID
+  location: String
+  meetingUrl: String
+  mode: AppointmentMode!
+  startTime: DateTime!
+  title: String!
+  userId: String
+}
+
+input CreateChatInput {
+  userId: String!
+  userInput: String!
+}
+
+input CreateFeedbackInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input CreateMedicalProfileInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input CreateSubscriptionInput {
+  interval: Interval! = MONTHLY
+  paystackRef: String
+  planId: ID!
+  status: Status! = PENDING
+  userId: ID!
+  validFrom: String
+  validTo: String
+}
+
+input CreateSubscriptionPlanInput {
+  currency: String! = "USD"
+  description: String
+  features: [String!]!
+  name: SubscriptionTier!
+  pricePerMonth: Float!
+  pricePerYear: Float!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Feedback {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input FinalizeRegistrationInput {
+  password: String!
+  registrationToken: String!
+}
+
+type FinalizeRegistrationResponse {
+  message: String!
+}
+
+enum GenderType {
+  FEMALE
+  MALE
+  OTHER
+}
+
+type InitializedSubscriptionResponse {
+  authorization_url: String!
+  reference: String!
+  transactionDetails: SubscriptionType!
+}
+
+enum Interval {
+  MONTHLY
+  YEARLY
+}
+
+"""
+The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSONObject
+
+input LoginUserInput {
+  email: String!
+  password: String!
+}
+
+type MedicalProfile {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type Mutation {
+  completeRegistrationProfile(data: CompleteProfileInput!): CompleteProfileResponse!
+  completeStreak(userId: ID!): StreakType!
+  createFeedback(createFeedbackInput: CreateFeedbackInput!): Feedback!
+  createMedicalProfile(createMedicalProfileInput: CreateMedicalProfileInput!): MedicalProfile!
+  createSubscriptionPlan(data: CreateSubscriptionPlanInput!): SubscriptionPlanType!
+  deleteSubscription(id: ID!): SubscriptionType!
+  deleteSubscriptionPlan(id: ID!): SubscriptionPlanType!
+  enableAllNotifications(userId: String!): NotificationSettings!
+  finalizeRegister(data: FinalizeRegistrationInput!): FinalizeRegistrationResponse!
+  initializeSubscription(input: CreateSubscriptionInput!): InitializedSubscriptionResponse!
+  login(data: LoginUserInput!): AuthPayload!
+  removeFeedback(id: Int!): Feedback!
+  removeMedicalProfile(id: Int!): MedicalProfile!
+  requestPasswordReset(data: RequestPasswordResetInput!): ResetPasswordResponse!
+  resetPassword(data: ResetPasswordInput!): ResetResult!
+  sendChat(data: CreateChatInput!): Chat!
+  startRegister(data: StartRegistrationInput!): StartRegistrationResponse!
+  toggleAppointmentNotification(userId: String!, value: Boolean!): NotificationSettings!
+  toggleArticleNotification(userId: String!, value: Boolean!): NotificationSettings!
+  toggleInsightsNotification(userId: String!, value: Boolean!): NotificationSettings!
+  updateFeedback(updateFeedbackInput: UpdateFeedbackInput!): Feedback!
+  updateMedicalProfile(updateMedicalProfileInput: UpdateMedicalProfileInput!): MedicalProfile!
+  updateSubscriptionPlan(data: UpdateSubscriptionPlanInput!, id: ID!): SubscriptionPlanType!
+  updateUser(data: UpdateUserInput!): UserType!
+  verifyRegisterCode(data: VerifyEmailCodeInput!): VerifyEmailCodeResponse!
+}
+
+type NotificationSettings {
+  appointmentNotification: Boolean!
+  articleNotification: Boolean!
+  id: ID!
+  insightsNotification: Boolean!
+  userId: ID!
+}
+
+type Query {
+  feedback(id: Int!): Feedback!
+  getUserStreak(userId: ID!): StreakType!
+  medicalProfile(id: Int!): MedicalProfile!
+  subscription(id: ID!): SubscriptionType!
+  subscriptionPlan(id: ID!): SubscriptionPlanType
+  subscriptionPlans: [SubscriptionPlanType!]!
+  subscriptionsByUser(userId: ID!): [SubscriptionType!]!
+  user(id: String!): UserType!
+  users: [UserType!]!
+  verifySubscription(reference: String!): SubscriptionType!
+}
+
+input RequestPasswordResetInput {
+  email: String!
+}
+
+input ResetPasswordInput {
+  newPassword: String!
+  token: String!
+}
+
+type ResetPasswordResponse {
+  message: String!
+  resetLink: String!
+}
+
+type ResetResult {
+  message: String!
+}
+
+input StartRegistrationInput {
+  email: String!
+}
+
+type StartRegistrationResponse {
+  message: String!
+}
+
+enum Status {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+  FAILED
+  PENDING
+}
+
+type StreakType {
+  createdAt: DateTime!
+  currentStreak: Float!
+  id: ID!
+  lastCompletedDate: DateTime
+  longestStreak: Float!
+  updatedAt: DateTime!
+  userId: ID!
+}
+
+type SubscriptionPlanType {
+  createdAt: DateTime!
+  currency: String!
+  description: String
+  features: [String!]!
+  id: ID!
+  name: SubscriptionTier!
+  pricePerMonth: Float!
+  pricePerYear: Float!
+  updatedAt: DateTime!
+}
+
+enum SubscriptionTier {
+  FREEMIUM
+  PREMIUM
+  PREMIUM_PLUS
+}
+
+type SubscriptionType {
+  createdAt: DateTime!
+  id: ID!
+  interval: Interval!
+  paystackRef: String
+  plan: SubscriptionPlanType
+  planId: ID!
+  status: Status!
+  updatedAt: DateTime!
+  userId: ID!
+  validFrom: DateTime!
+  validTo: DateTime
+}
+
+input UpdateFeedbackInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input UpdateMedicalProfileInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input UpdateSubscriptionPlanInput {
+  currency: String = "USD"
+  description: String
+  features: [String!]
+  name: SubscriptionTier
+  pricePerMonth: Float
+  pricePerYear: Float
+}
+
+input UpdateUserInput {
+  dateOfBirth: String
+  email: String
+  firstName: String
+  gender: String
+  id: ID!
+  lastName: String
+  password: String
+}
+
+type UserType {
+  dateOfBirth: DateTime
+  email: String!
+  firstName: String!
+  gender: String
+  id: ID!
+  lastName: String
+}
+
+input VerifyEmailCodeInput {
+  code: String!
+  email: String!
+}
+
+type VerifyEmailCodeResponse {
+  registrationToken: String!
+}
